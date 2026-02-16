@@ -382,7 +382,6 @@ int main(int argc, char **argv)
 
 /* Simulation */
 
-#pragma omp parallel for private(j,k,cor,vertices,Me,Ce,Ke,v,Mexv,Cexv,verticesonbnd,bv,xc,alpha,uf)
   for (i = 0; i < ARCHelems; i++) {
     for (j = 0; j < 12; j++) {
       Me[j] = 0.0;
