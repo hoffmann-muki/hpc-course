@@ -1276,16 +1276,16 @@ void smvp(int nodes, double (*A)[3][3], int *Acol, int *Aindex,
     }
   }
 
-#pragma omp parallel private(my_cpu_id,i,Anext,Alast,col,sum0,sum1,sum2)
-{
-#ifdef _OPENMP
-  my_cpu_id = omp_get_thread_num();
-#else
-   my_cpu_id=0;
-#endif
-}
-
+  /* Parallelize over rows (i). Each thread accumulates into its own
+     w1/my_cpu_id storage to avoid races, then we do a parallel reduction
+     over i in the final loop. */
+#pragma omp parallel for private(my_cpu_id,i,Anext,Alast,col,sum0,sum1,sum2)
   for (i = 0; i < nodes; i++) {
+#ifdef _OPENMP
+    my_cpu_id = omp_get_thread_num();
+#else
+    my_cpu_id = 0;
+#endif
     Anext = Aindex[i];
     Alast = Aindex[i + 1];
 
@@ -1326,12 +1326,21 @@ void smvp(int nodes, double (*A)[3][3], int *Acol, int *Aindex,
     w1[my_cpu_id][i].third += sum2;
   }
 
+  /* Zero output and reduce per-node across thread-local accumulators in parallel */
+#pragma omp parallel for private(i)
+  for (i = 0; i < nodes; i++) {
+    w[i][0] = 0.0;
+    w[i][1] = 0.0;
+    w[i][2] = 0.0;
+  }
+
+#pragma omp parallel for private(i,j)
   for (i = 0; i < nodes; i++) {
     for (j = 0; j < numthreads; j++) {
       if (w2[j][i]) {
-	w[i][0] += w1[j][i].first;
-	w[i][1] += w1[j][i].second;
-	w[i][2] += w1[j][i].third;
+    w[i][0] += w1[j][i].first;
+    w[i][1] += w1[j][i].second;
+    w[i][2] += w1[j][i].third;
       }
     }
   }
