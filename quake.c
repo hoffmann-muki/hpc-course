@@ -382,6 +382,7 @@ int main(int argc, char **argv)
 
 /* Simulation */
 
+#pragma omp parallel for private(j,k,cor,vertices,Me,Ce,Ke,v,Mexv,Cexv,verticesonbnd,bv,xc,alpha,uf)
   for (i = 0; i < ARCHelems; i++) {
     for (j = 0; j < 12; j++) {
       Me[j] = 0.0;
@@ -520,6 +521,7 @@ int main(int argc, char **argv)
 
   for (iter = 1; iter <= timesteps; iter++) {
 
+#pragma omp parallel for private(i,j)
     for (i = 0; i < ARCHnodes; i++)
       for (j = 0; j < 3; j++)
 	disp[disptplus][i][j] = 0.0;
@@ -529,6 +531,7 @@ int main(int argc, char **argv)
 
     time = iter * Exc.dt;
 
+#pragma omp parallel for private(i,j)
     for (i = 0; i < ARCHnodes; i++)
     {
       for (j = 0; j < 3; j++)
