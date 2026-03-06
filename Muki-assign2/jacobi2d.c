@@ -265,7 +265,7 @@ int main(int argc, char **argv)
                 if (j > 0) fprintf(fp, ",");
                 fprintf(fp, "%.3f", global[i * size_Y + j]);
             }
-            fprintf(fp, "\n");
+            fprintf(fp, "\r\n");
         }
         fclose(fp);
         free(global);
