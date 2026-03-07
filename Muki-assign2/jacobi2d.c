@@ -48,8 +48,10 @@ int main(int argc, char **argv)
 
     const char *input_file = argv[1];
     int timesteps = atoi(argv[2]);
-    int size_X = atoi(argv[3]);   /* number of rows */
-    int size_Y = atoi(argv[4]);   /* number of columns */
+    int arg_X = atoi(argv[3]);    /* size_X from command line (columns, X = horizontal) */
+    int arg_Y = atoi(argv[4]);    /* size_Y from command line (rows,    Y = vertical)   */
+    int size_X = arg_Y;           /* internal rows */
+    int size_Y = arg_X;           /* internal cols */
 
     /* Compute 2D process grid */
     int px, py;
@@ -254,7 +256,7 @@ int main(int argc, char **argv)
 
         /* Write output file */
         char outname[256];
-        snprintf(outname, sizeof(outname), "%dx%d.%d-output.csv", size_X, size_Y, nprocs);
+        snprintf(outname, sizeof(outname), "%dx%d.%d-output.csv", arg_X, arg_Y, nprocs);
         FILE *fp = fopen(outname, "w");
         if (!fp) {
             fprintf(stderr, "Cannot open output file: %s\n", outname);
