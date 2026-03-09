@@ -1,5 +1,4 @@
 import matplotlib.pyplot as plt
-import numpy as np
 
 # Data from your runs
 processes = [4, 8, 16, 32, 64]
