@@ -95,17 +95,13 @@ class VideoUtility {
         void dumpFrame(std::vector<float *> &batch, int idx, std::string const& fname) {
             cudaMemcpy(scratch_, batch.at(idx), width_*height_*3*sizeof(float), cudaMemcpyDeviceToHost);
 
-            cv::Mat tmpMatFloat(height_, width_, CV_32FC3, scratch_);
-            cv::Mat tmpMatU8;
-            tmpMatFloat.convertTo(tmpMatU8, CV_8UC3, 255.0f);
-
             std::ofstream outFile(fname);
             for (int i = 0; i < height_; i += 1) {
                 for (int j = 0; j < width_; j += 1) {
-                    const cv::Vec3b pixel = tmpMatU8.at<cv::Vec3b>(i, j);
-                    outFile << static_cast<unsigned>(pixel[0]) << ","
-                            << static_cast<unsigned>(pixel[1]) << ","
-                            << static_cast<unsigned>(pixel[2]);
+                    int flatIdx = i*width_*3 + j*3;
+                    outFile << static_cast<unsigned>(static_cast<uint8_t>(scratch_[flatIdx+0]*255.0f)) << ","
+                            << static_cast<unsigned>(static_cast<uint8_t>(scratch_[flatIdx+1]*255.0f)) << ","
+                            << static_cast<unsigned>(static_cast<uint8_t>(scratch_[flatIdx+2]*255.0f));
 
                     if (j != width_ - 1)
                         outFile << ",";
