@@ -36,6 +36,7 @@ class VideoUtility {
             /* setup output video writer */
             int otherCodec = cv::VideoWriter::fourcc('m','p','4','v');
             double inputFPS = inVideo_.get(cv::CAP_PROP_FPS);
+            std::cout << "Opened video: " << width_ << "x" << height_ << " @ " << inputFPS << "fps, " << numFrames_ << " frames." << std::endl;
             outVideo_.open(outputFilename, otherCodec, inputFPS, cv::Size(width_, height_), true);
             outVideo_.set(cv::VIDEOWRITER_PROP_QUALITY, 100);
             if (!outVideo_.isOpened()) {
@@ -113,7 +114,11 @@ class VideoUtility {
         void allocateFrames(std::vector<float *> &rawData, int batchSize=10) {
             rawData.resize(batchSize);
             for (auto &ptr : rawData) {
-                cudaMalloc((void **)&ptr, width_*height_*3*sizeof(float));
+                cudaError_t err = cudaMalloc((void **)&ptr, width_*height_*3*sizeof(float));
+                if (err != cudaSuccess) {
+                    std::cerr << "cudaMalloc failed: " << cudaGetErrorString(err) << std::endl;
+                    std::exit(1);
+                }
             }
         }
 

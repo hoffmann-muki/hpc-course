@@ -108,6 +108,10 @@ float convolveFrames(std::vector<float *> const& framesIn, std::vector<float *> 
         convolveGPU<<<gridSize, blockSize, 0, streams[i % numStreams]>>>(framesIn.at(i), framesOut.at(i), width, height, kernel, kernelWidth, kernelHeight);
     }
     cudaDeviceSynchronize();
+    cudaError_t syncErr = cudaGetLastError();
+    if (syncErr != cudaSuccess) {
+        printf("CUDA Error during kernel execution: %s\n", cudaGetErrorString(syncErr));
+    }
     cudaEventRecord(stop, 0);
     cudaEventSynchronize(stop);
     
