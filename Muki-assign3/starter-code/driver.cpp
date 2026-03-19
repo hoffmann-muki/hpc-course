@@ -229,8 +229,7 @@ int main(int argc, char **argv) {
     std::string frameFilename;
     bool dumpFrameEnabled = false;
     if (argc > 6) {
-        const int frameNumber = std::stoi(std::string(argv[6]));
-        frameIdx = frameNumber - 1;
+        frameIdx = std::stoi(std::string(argv[6]));
         frameFilename = std::string(argv[7]);
         dumpFrameEnabled = true;
     }
@@ -244,8 +243,8 @@ int main(int argc, char **argv) {
     VideoUtilities::VideoUtility video(inputFilename, outputFilename);
 
     if (dumpFrameEnabled && (frameIdx < 0 || frameIdx >= video.numFrames())) {
-        std::cerr << "Frame number out of range: " << (frameIdx + 1) << ". Valid range is [1, "
-                  << video.numFrames() << "]" << std::endl;
+        std::cerr << "Frame index out of range: " << frameIdx << ". Valid range is [0, "
+                  << (video.numFrames() - 1) << "]" << std::endl;
         std::exit(1);
     }
 
