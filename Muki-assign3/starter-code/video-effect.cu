@@ -1,4 +1,5 @@
 #include <vector>   // vector
+#include <cstdio>   // printf
 
 /*  use this to set the block size of the kernel launches.
     CUDA kernels will be launched with block size blockDimSize by blockDimSize. */
