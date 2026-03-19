@@ -10,7 +10,7 @@ CXX_LIBS = -L$(OPENCV_ROOT)/lib64 -L$(CUDA_ROOT)/lib64 -lopencv_core -lopencv_vi
 
 CUDA = nvcc
 CUDAFLAGS = -std=c++11 -O2 -Xcompiler "$(CXXFLAGS)"
-GENCODE = --generate-code arch=compute_80,code=sm_80 --generate-code arch=compute_90,code=sm_90
+GENCODE = --generate-code arch=compute_80,code=sm_80
 
 TARGET = video-effect
 
